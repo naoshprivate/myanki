@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>フラッシュカード</title>
+<title>フラッシュカード単語帳</title>
 <style>
   body {
     font-family: sans-serif;
@@ -10,45 +10,45 @@
     margin-top: 40px;
   }
 
-.card {
-  width: 320px;
-  height: 200px;
-  margin: 20px auto;
-  perspective: 1000px;
-  cursor: pointer;
-}
+  .card {
+    width: 320px;
+    height: 200px;
+    margin: 20px auto;
+    perspective: 1000px;
+    cursor: pointer;
+  }
+  .inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+  }
+  .flipped .inner {
+    transform: rotateY(180deg);
+  }
+  .front, .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #333;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backface-visibility: hidden;
+    font-size: 26px;
+  }
+  .back {
+    transform: rotateY(180deg);
+    background: #f2f2f2;
+  }
 
-.inner {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transform-style: preserve-3d; /* ← 重要 */
-  transition: transform 0.6s;
-}
-
-.flipped .inner {
-  transform: rotateY(180deg); /* ← 裏返し */
-}
-
-.front, .back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 1px solid #333;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backface-visibility: hidden; /* ← これがないと両方見える */
-  font-size: 26px;
-  background: #fff;
-}
-
-.back {
-  transform: rotateY(180deg); /* ← 裏面だけ反転させる */
-  background: #f8f8f8;
-}
-
+  button {
+    font-size: 16px;
+    padding: 10px 20px;
+    margin: 10px;
+  }
 </style>
 </head>
 
@@ -56,15 +56,18 @@
 
 <h2>フラッシュカード単語帳</h2>
 
-<div class="card" id="flashcard">
+<div class="card" id="flashcard" onclick="flipCard()">
   <div class="inner">
     <div class="front" id="word"></div>
     <div class="back" id="meaning"></div>
   </div>
 </div>
 
+<button onclick="prevCard()">◀ Prev</button>
+<button onclick="nextCard()">Next ▶</button>
+
 <script>
-// ▼ 単語データ
+// ここに単語帳データ（自由に追加できます）
 const cards = [
   { word: "apple", meaning: "りんご" },
   { word: "book", meaning: "本" },
@@ -73,7 +76,7 @@ const cards = [
   { word: "water", meaning: "水" }
 ];
 
-// ▼ ランダム順
+// ランダム順のインデックス一覧を作成
 let order = [];
 function shuffleOrder() {
   order = [...Array(cards.length).keys()];
@@ -84,53 +87,42 @@ function shuffleOrder() {
 }
 shuffleOrder();
 
-// ▼ 現在のカード
+// 現在位置
 let current = 0;
 
-// ▼ カード表示
+// カードの表示
 function showCard() {
   const card = cards[order[current]];
   document.getElementById("word").textContent = card.word;
   document.getElementById("meaning").textContent = card.meaning;
+
+  // 裏向きのままにならないよう戻す
   document.getElementById("flashcard").classList.remove("flipped");
 }
 
-// ▼ カード反転
+// カードを反転
 function flipCard() {
   document.getElementById("flashcard").classList.toggle("flipped");
 }
 
-// ▼ 次へ
+// 次へ
 function nextCard() {
   current++;
   if (current >= cards.length) {
-    shuffleOrder();
+    shuffleOrder(); // すべて見たらまたランダムに並び替え
     current = 0;
   }
   showCard();
 }
 
-// ▼ 前へ
+// 前へ
 function prevCard() {
   current--;
   if (current < 0) current = cards.length - 1;
   showCard();
 }
 
-// ▼ キーボード操作
-document.addEventListener("keydown", function(e) {
-  if (e.key === "ArrowRight") nextCard();
-  else if (e.key === "ArrowLeft") prevCard();
-  else if (e.key === " ") {
-    e.preventDefault(); // スクロール防止
-    flipCard();
-  }
-});
-
-// ▼ クリックでも反転
-document.getElementById("flashcard").addEventListener("click", flipCard);
-
-// ▼ 初期表示
+// 初期表示
 showCard();
 </script>
 
