@@ -1,0 +1,19 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #282c34; /* 背景色 */
+}
+
+#clock {
+    font-family: 'Arial', sans-serif;
+    font-size: 8rem;
+    color: #61dafb; /* 文字色 */
+    text-shadow: 0 0 20px rgba(97, 218, 251, 0.8); /* テキストに影をつけ、アニメーションの「光」を演出 */
+    transition: color 0.5s ease-in-out, text-shadow 0.5s ease-in-out;
+}
+
+/* アニメーションの例：秒が変わるたびに色が少し変わるように見せる */
+/* これはJavaScriptでクラスをトグルすることで実現できますが、ここでは単なるデザインとして */
